@@ -1,0 +1,60 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "convert resnet18 engine",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/resnet18",
+            "args": [
+                "-s",
+                // "/data3/zy/projects/yolo-tensorrt-dev-yolov4/03000001748000000_.mp4"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            // "MIMode": "lldb",
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "run resnet18",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/resnet18",
+            "args": [
+                "-d",
+                // "/data3/zy/projects/yolo-tensorrt-dev-yolov4/03000001748000000_.mp4"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            // "MIMode": "lldb",
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb"
+        }
+        //,
+        // {
+        //     "name": "clion2",
+        //     "type": "cppdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/build/testClion2",
+        //     // "args": [
+        //     //     "./resources/deepsort.engine",
+        //     //     "/data3/zy/projects/yolo-tensorrt-dev-yolov4/03000001748000000_.mp4"
+        //     // ],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceFolder}",
+        //     "environment": [],
+        //     "externalConsole": false,
+        //     // "MIMode": "lldb",
+        //     "preLaunchTask": "make",
+        //     "miDebuggerPath": "/usr/bin/gdb"
+        // }
+    ]
+}
