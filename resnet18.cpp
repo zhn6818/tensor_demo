@@ -166,7 +166,7 @@ ICudaEngine *createEngine(unsigned int maxBatchSize, IBuilder *builder, IBuilder
 
     IConvolutionLayer *conv1 = network->addConvolutionNd(*data, 64, DimsHW{7, 7}, weightMap["conv1.weight"], emptywts);
 
-    Dims a1 = conv1->getOutput(0)->getDimensions();
+    // Dims a1 = conv1->getOutput(0)->getDimensions();
 
     assert(conv1);
     conv1->setStrideNd(DimsHW{2, 2});
@@ -193,13 +193,15 @@ ICudaEngine *createEngine(unsigned int maxBatchSize, IBuilder *builder, IBuilder
 
     IActivationLayer *relu8 = basicBlock(network, weightMap, *relu7->getOutput(0), 256, 512, 2, "layer4.0.");
     IActivationLayer *relu9 = basicBlock(network, weightMap, *relu8->getOutput(0), 512, 512, 1, "layer4.1.");
-    Dims a9 = relu9->getOutput(0)->getDimensions();
-    IPoolingLayer *pool2 = network->addPoolingNd(*relu9->getOutput(0), PoolingType::kAVERAGE, DimsHW{3, 3});
+    // Dims a9 = relu9->getOutput(0)->getDimensions();
+    size_t h = relu9->getOutput(0)->getDimensions().d[1];
+    size_t w = relu9->getOutput(0)->getDimensions().d[2];
+    IPoolingLayer *pool2 = network->addPoolingNd(*relu9->getOutput(0), PoolingType::kAVERAGE, DimsHW{h, w});
     assert(pool2);
     Dims aa = pool2->getOutput(0)->getDimensions();
-    
+
     pool2->setStrideNd(DimsHW{1, 1});
-    
+
     IFullyConnectedLayer *fc1 = network->addFullyConnected(*pool2->getOutput(0), OUTPUT_SIZE, weightMap["fc.weight"], weightMap["fc.bias"]);
     assert(fc1);
 
