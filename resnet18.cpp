@@ -8,6 +8,7 @@
 #include <vector>
 #include <chrono>
 #include <cmath>
+#include "NvOnnxParser.h"
 
 #define CHECK(status)                                          \
     do                                                         \
@@ -21,9 +22,9 @@
     } while (0)
 
 // stuff we know about the network and the input/output blobs
-static const int INPUT_H = 96;
-static const int INPUT_W = 96;
-static const int OUTPUT_SIZE = 2;
+static const int INPUT_H = 224;
+static const int INPUT_W = 224;
+static const int OUTPUT_SIZE = 1000;
 
 const char *INPUT_BLOB_NAME = "data";
 const char *OUTPUT_BLOB_NAME = "prob";
@@ -159,7 +160,7 @@ ICudaEngine *createEngine(unsigned int maxBatchSize, IBuilder *builder, IBuilder
     ITensor *data = network->addInput(INPUT_BLOB_NAME, dt, Dims3{3, INPUT_H, INPUT_W});
     assert(data);
 
-    std::map<std::string, Weights> weightMap = loadWeights("/data1_dev/zhn/dogcat/models/resnet18_bias.wts");
+    std::map<std::string, Weights> weightMap = loadWeights("./engine/resnet18.wts");
     // std::map<std::string, Weights> weightMap = loadWeights("/data1_dev/zhn/dogcat/models/resnet18.wts");
 
     Weights emptywts{DataType::kFLOAT, nullptr, 0};
@@ -215,7 +216,7 @@ ICudaEngine *createEngine(unsigned int maxBatchSize, IBuilder *builder, IBuilder
 
     // Build engine
     builder->setMaxBatchSize(maxBatchSize);
-    config->setMaxWorkspaceSize(1 << 20);
+    config->setMaxWorkspaceSize(1 << 30);
     ICudaEngine *engine = builder->buildEngineWithConfig(*network, *config);
     std::cout << "build out" << std::endl;
 
@@ -239,6 +240,62 @@ void APIToModel(unsigned int maxBatchSize, IHostMemory **modelStream)
 
     // Create model to populate the network, then set the outputs and create an engine
     ICudaEngine *engine = createEngine(maxBatchSize, builder, config, DataType::kFLOAT);
+    assert(engine != nullptr);
+
+    // Serialize the engine
+    (*modelStream) = engine->serialize();
+
+    // Close everything down
+    engine->destroy();
+    builder->destroy();
+    config->destroy();
+}
+
+ICudaEngine *createEngine2(unsigned int maxBatchSize, IBuilder *builder, IBuilderConfig *config, DataType dt)
+{
+    int verbosity = (int)nvinfer1::ILogger::Severity::kWARNING;
+    nvinfer1::INetworkDefinition *network = NULL;
+    const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
+    std::cout << "explicitBatch::" << explicitBatch << std::endl;
+    network = builder->createNetworkV2(explicitBatch);
+    auto parser = nvonnxparser::createParser(*network, gLogger);
+    std::string model_file = "./engine/resnet18.onnx";
+    if (!parser->parseFromFile(model_file.c_str(), verbosity))
+    {
+        std::string msg("failed to parse onnx file");
+        gLogger.log(nvinfer1::ILogger::Severity::kERROR, msg.c_str());
+        exit(EXIT_FAILURE);
+    }
+
+    // Build engine
+    builder->setMaxBatchSize(maxBatchSize);
+    config->setMaxWorkspaceSize(1 << 30);
+
+    if (builder->platformHasFastFp16())
+    {
+        config->setFlag(nvinfer1::BuilderFlag::kFP16);
+    }
+
+    ICudaEngine *engine = builder->buildEngineWithConfig(*network, *config);
+    std::cout << "build out" << std::endl;
+
+    // Don't need the network any more
+    network->destroy();
+
+    assert(engine);
+
+    return engine;
+}
+
+void APIToModel2(unsigned int maxBatchSize, IHostMemory **modelStream)
+{
+    // Create builder
+    IBuilder *builder = createInferBuilder(gLogger);
+    IBuilderConfig *config = builder->createBuilderConfig();
+
+    // Create model to populate the network, then set the outputs and create an engine
+    ICudaEngine *engine = createEngine2(maxBatchSize, builder, config, DataType::kFLOAT);
+
     assert(engine != nullptr);
 
     // Serialize the engine
@@ -314,9 +371,25 @@ int main(int argc, char **argv)
         modelStream->destroy();
         return 1;
     }
+    else if (std::string(argv[1]) == "-o")
+    {
+        IHostMemory *modelStream{nullptr};
+        APIToModel2(1, &modelStream);
+        assert(modelStream != nullptr);
+
+        std::ofstream p("./engine/resnet18_onnx.engine", std::ios::binary);
+        if (!p)
+        {
+            std::cerr << "could not open plan output file" << std::endl;
+            return -1;
+        }
+        p.write(reinterpret_cast<const char *>(modelStream->data()), modelStream->size());
+        modelStream->destroy();
+        return 1;
+    }
     else if (std::string(argv[1]) == "-d")
     {
-        std::ifstream file("./engine/resnet18.engine", std::ios::binary);
+        std::ifstream file("./engine/resnet18_onnx.engine", std::ios::binary);
         if (file.good())
         {
             file.seekg(0, file.end);

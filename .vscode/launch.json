@@ -37,6 +37,37 @@
             // "MIMode": "lldb",
             "preLaunchTask": "build",
             "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "convert onnx resnet18",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/resnet18",
+            "args": [
+                "-o",
+                // "/data3/zy/projects/yolo-tensorrt-dev-yolov4/03000001748000000_.mp4"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            // "MIMode": "lldb",
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "test onnx",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/testOnnx",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            // "MIMode": "lldb",
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb"
         }
         //,
         // {

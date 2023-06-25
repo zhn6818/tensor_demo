@@ -4,9 +4,13 @@ project(resnet)
 
 add_definitions(-std=c++11)
 
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
+
+add_definitions(-O0 -g)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 # include and link dirs of cuda and tensorrt, you need adapt them if yours are different
@@ -14,12 +18,17 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(/usr/local/cuda/include)
 link_directories(/usr/local/cuda/lib64)
 # tensorrt
-include_directories(/Downloads/onnxruntime/TensorRT-8.2.1.8/include/)
-link_directories(/Downloads/onnxruntime/TensorRT-8.2.1.8/lib/)
+include_directories(/data1/virgo_3rdparty/TensorRT-8.4.1.5/include/)
+link_directories(/data1/virgo_3rdparty/TensorRT-8.4.1.5/lib/)
 
 add_executable(resnet18 ${PROJECT_SOURCE_DIR}/resnet18.cpp)
-target_link_libraries(resnet18 nvinfer)
-target_link_libraries(resnet18 cudart)
+target_link_libraries(resnet18 nvinfer libnvinfer.so nvparsers nvinfer_plugin nvonnxparser)
+target_link_libraries(resnet18 cudart )
+
+add_executable(testOnnx ${PROJECT_SOURCE_DIR}/test_onnx.cpp )
+target_link_libraries(testOnnx nvinfer libnvinfer.so nvparsers nvinfer_plugin nvonnxparser)
+target_link_libraries(testOnnx cudart )
+
 
 # add_executable(resnet34 ${PROJECT_SOURCE_DIR}/resnet34.cpp)
 # target_link_libraries(resnet34 nvinfer)
