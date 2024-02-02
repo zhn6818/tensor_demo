@@ -77,6 +77,20 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
+        {
+            "name": "superpoint",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/superpoint",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            // "MIMode": "lldb",
+            "preLaunchTask": "build",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
         //,
         // {
         //     "name": "clion2",

@@ -30,6 +30,10 @@ target_link_libraries(testOnnx nvinfer libnvinfer.so nvparsers nvinfer_plugin nv
 target_link_libraries(testOnnx cudart )
 
 
+add_executable(superpoint ${PROJECT_SOURCE_DIR}/superpoint.cpp )
+target_link_libraries(superpoint nvinfer libnvinfer.so nvparsers nvinfer_plugin nvonnxparser)
+target_link_libraries(superpoint cudart )
+
 # add_executable(resnet34 ${PROJECT_SOURCE_DIR}/resnet34.cpp)
 # target_link_libraries(resnet34 nvinfer)
 # target_link_libraries(resnet34 cudart)
