@@ -2,3 +2,5 @@
 build/
 
 engine/resnet18.engine
+/superpoint/superpoint_v1.engine
+/superpoint/superpoint_v1.onnx
