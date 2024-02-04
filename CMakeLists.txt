@@ -34,6 +34,9 @@ add_executable(superpoint ${PROJECT_SOURCE_DIR}/superpoint.cpp )
 target_link_libraries(superpoint nvinfer libnvinfer.so nvparsers nvinfer_plugin nvonnxparser)
 target_link_libraries(superpoint cudart )
 
+add_subdirectory(trt_tools)
+
+
 # add_executable(resnet34 ${PROJECT_SOURCE_DIR}/resnet34.cpp)
 # target_link_libraries(resnet34 nvinfer)
 # target_link_libraries(resnet34 cudart)
@@ -50,5 +53,5 @@ target_link_libraries(superpoint cudart )
 # target_link_libraries(wideresnet50 nvinfer)
 # target_link_libraries(wideresnet50 cudart)
 
-add_definitions(-O2 -pthread)
+add_definitions(-O0 -pthread)
 
