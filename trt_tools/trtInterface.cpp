@@ -15,28 +15,33 @@ bool trtInterface::build(bool isAddOptiProfile)
 {
     if (deserialize_engine())
     {
+        std::cout << "file exists!!!!!!!" << std::endl;
         return true;
     }
     auto builder = TensorRTUniquePtr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(gLogger.getTRTLogger()));
     if (!builder)
     {
+        std::cout << "builder create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     const auto explicit_batch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
     auto network = TensorRTUniquePtr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(explicit_batch));
     if (!network)
     {
+        std::cout << "metwork create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     auto config = TensorRTUniquePtr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
     if (!config)
     {
+        std::cout << "config create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     auto parser = TensorRTUniquePtr<nvonnxparser::IParser>(
         nvonnxparser::createParser(*network, gLogger.getTRTLogger()));
     if (!parser)
     {
+        std::cout << "parser create failed !!!!!!!!!!" << std::endl;
         return false;
     }
 
@@ -45,6 +50,7 @@ bool trtInterface::build(bool isAddOptiProfile)
         auto profile = builder->createOptimizationProfile();
         if (!profile)
         {
+            std::cout << "profile create failed !!!!!!!!!!" << std::endl;
             return false;
         }
         // std::cout << config_->input_tensor_names[0].c_str() << std::endl;
@@ -60,27 +66,32 @@ bool trtInterface::build(bool isAddOptiProfile)
     auto constructed = construct_network(builder, network, config, parser);
     if (!constructed)
     {
+        std::cout << "construct create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     auto profile_stream = tensorrt_virgo_common::makeCudaStream();
     if (!profile_stream)
     {
+        std::cout << "stream create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     config->setProfileStream(*profile_stream); // 创建新的CUDA流
     TensorRTUniquePtr<IHostMemory> plan{builder->buildSerializedNetwork(*network, *config)};
     if (!plan)
     {
+        std::cout << "plan create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     TensorRTUniquePtr<IRuntime> runtime{createInferRuntime(gLogger.getTRTLogger())};
     if (!runtime)
     {
+        std::cout << "runtime create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     engine_ = std::shared_ptr<nvinfer1::ICudaEngine>(runtime->deserializeCudaEngine(plan->data(), plan->size()));
     if (!engine_)
     {
+        std::cout << "engine create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     save_engine();
@@ -104,6 +115,7 @@ bool trtInterface::construct_network(TensorRTUniquePtr<nvinfer1::IBuilder> &buil
                                         static_cast<int>(gLogger.getReportableSeverity()));
     if (!parsed)
     {
+        std::cout << "parsed create failed !!!!!!!!!!" << std::endl;
         return false;
     }
     config->setMaxWorkspaceSize(512_MiB);
@@ -116,13 +128,17 @@ bool trtInterface::construct_network(TensorRTUniquePtr<nvinfer1::IBuilder> &buil
 void trtInterface::save_engine()
 {
     if (config_->engine_file.empty())
+    {
         return;
+    }
     if (engine_ != nullptr)
     {
         nvinfer1::IHostMemory *data = engine_->serialize();
         std::ofstream file(config_->engine_file, std::ios::binary);
         if (!file)
+        {
             return;
+        }
         file.write(reinterpret_cast<const char *>(data->data()), data->size());
     }
 }
