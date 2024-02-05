@@ -10,6 +10,8 @@ option(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
 
+find_package(CUDA REQUIRED)
+
 add_definitions(-O0 -g)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -35,6 +37,9 @@ target_link_libraries(superpoint nvinfer libnvinfer.so nvparsers nvinfer_plugin 
 target_link_libraries(superpoint cudart )
 
 add_subdirectory(trt_tools)
+# message("~~~~~~~~~~~~~")
+# message(${CUDA_LIBRARIES})
+# message("~~~~~~~~~~~~~")
 
 
 # add_executable(resnet34 ${PROJECT_SOURCE_DIR}/resnet34.cpp)
@@ -53,5 +58,5 @@ add_subdirectory(trt_tools)
 # target_link_libraries(wideresnet50 nvinfer)
 # target_link_libraries(wideresnet50 cudart)
 
-add_definitions(-O0 -pthread)
+# add_definitions(-O0 -pthread)
 
