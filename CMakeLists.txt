@@ -22,7 +22,19 @@ link_directories(/usr/local/cuda/lib64)
 # tensorrt
 include_directories(/data1/virgo_3rdparty/TensorRT-8.4.1.5/include/)
 link_directories(/data1/virgo_3rdparty/TensorRT-8.4.1.5/lib/)
+include_directories(/data1/virgo_3rdparty/opencv/include/opencv4)
+include_directories(/data1/virgo_3rdparty/opencv/include/opencv4/opencv2)
 
+link_directories(/data1/virgo_3rdparty/opencv/lib)
+set(OpenCV_LIBRARIES   
+libopencv_core.so.4.5 
+libopencv_imgproc.so.4.5 
+libopencv_imgcodecs.so.4.5 
+libopencv_videoio.so.4.5  
+libopencv_video.so.4.5 
+libopencv_calib3d.so
+libopencv_features2d.so
+)
 add_executable(resnet18 ${PROJECT_SOURCE_DIR}/resnet18.cpp)
 target_link_libraries(resnet18 nvinfer libnvinfer.so nvparsers nvinfer_plugin nvonnxparser)
 target_link_libraries(resnet18 cudart )

@@ -26,7 +26,7 @@ bool trtInterface::build(bool isAddOptiProfile)
     }
     const auto explicit_batch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
     auto network = TensorRTUniquePtr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(explicit_batch));
-    if (!network)
+    if (!network) 
     {
         std::cout << "metwork create failed !!!!!!!!!!" << std::endl;
         return false;
@@ -95,21 +95,10 @@ bool trtInterface::build(bool isAddOptiProfile)
         return false;
     }
     save_engine();
-    // ASSERT(network->getNbInputs() == 1);
-    // input_dims_ = network->getInput(0)->getDimensions();
-    // ASSERT(input_dims_.nbDims == 4);
-    // ASSERT(network->getNbOutputs() == 2);
-    // semi_dims_ = network->getOutput(0)->getDimensions();
-    // ASSERT(semi_dims_.nbDims == 3);
-    // desc_dims_ = network->getOutput(1)->getDimensions();
-    // ASSERT(desc_dims_.nbDims == 4);
     return true;
 }
 
-bool trtInterface::construct_network(TensorRTUniquePtr<nvinfer1::IBuilder> &builder,
-                                     TensorRTUniquePtr<nvinfer1::INetworkDefinition> &network,
-                                     TensorRTUniquePtr<nvinfer1::IBuilderConfig> &config,
-                                     TensorRTUniquePtr<nvonnxparser::IParser> &parser) const
+bool trtInterface::construct_network(TensorRTUniquePtr<nvinfer1::IBuilder> &builder, TensorRTUniquePtr<nvinfer1::INetworkDefinition> &network, TensorRTUniquePtr<nvinfer1::IBuilderConfig> &config, TensorRTUniquePtr<nvonnxparser::IParser> &parser) const
 {
     auto parsed = parser->parseFromFile(config_->onnx_file.c_str(),
                                         static_cast<int>(gLogger.getReportableSeverity()));
@@ -170,4 +159,9 @@ bool trtInterface::deserialize_engine()
         return true;
     }
     return false;
+}
+
+std::shared_ptr<nvinfer1::ICudaEngine> trtInterface::GetEngine()
+{
+    return this->engine_;
 }

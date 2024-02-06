@@ -95,7 +95,7 @@
             "name": "testinterface",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/trt_tools/testinterface",
+            "program": "${workspaceFolder}/build/trt_tools/testinter",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
