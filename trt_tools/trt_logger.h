@@ -17,7 +17,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "logging.h"
+#include "trt_logging.h"
 
 class TensorRTErrorRecorder;
 

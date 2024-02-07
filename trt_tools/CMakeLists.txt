@@ -8,7 +8,7 @@ include_directories(/data1/zhn/code/eigen-git-mirror/install/include/eigen3)
 
 link_directories(/data1/virgo_3rdparty/TensorRT-8.4.1.5/lib)
 
-add_executable(testinter test.cpp trtInterface.cpp trtInterface.h error_recorder.h logger.h logger.cpp logging.h common.h superp.h superp.cpp buffers.h half.h)
+add_executable(testinter test.cpp trtInterface.cpp trtInterface.h error_recorder.h trt_logger.h trt_logger.cpp trt_logging.h trt_common.h superp.h superp.cpp buffers.h half.h)
 target_link_libraries(testinter
   nvinfer
   nvonnxparser

@@ -7,6 +7,9 @@ class SuperPointC : public trtInterface
 {
 private:
     std::shared_ptr<nvinfer1::IExecutionContext> context_;
+    nvinfer1::Dims input_dims_{};
+    nvinfer1::Dims semi_dims_{};
+    nvinfer1::Dims desc_dims_{};
 
 public:
     SuperPointC(Config *config);

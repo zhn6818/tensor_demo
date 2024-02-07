@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "logger.h"
+#include "trt_logger.h"
 #include "error_recorder.h"
-#include "logging.h"
+#include "trt_logging.h"
 
 TensorRTErrorRecorder gRecorder;
 namespace tensorrt_virgo_log {

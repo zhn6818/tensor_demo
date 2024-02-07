@@ -5,12 +5,12 @@
 #include "NvInfer.h"
 #include <fstream>
 #include <memory>
-#include "logger.h"
+#include "trt_logger.h"
 #include <iostream>
 #include <Eigen/Core>
 #include "NvInferRuntime.h"
-#include "config.h"
-#include "common.h"
+#include "trt_config.h"
+#include "trt_common.h"
 #include "buffers.h"
 
 using namespace tensorrt_virgo_log;
@@ -22,7 +22,7 @@ class trtInterface
 private:
     std::shared_ptr<nvinfer1::ICudaEngine> engine_;
     
-    nvinfer1::Dims input_dims_{};
+    // nvinfer1::Dims input_dims_{};
     std::vector<Dims4> vecDims;
     
 

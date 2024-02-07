@@ -1,6 +1,6 @@
 #include <iostream>
 #include "superp.h"
-#include "config.h"
+#include "trt_config.h"
 #include "trtInterface.h"
 #include <opencv2/opencv.hpp>
 

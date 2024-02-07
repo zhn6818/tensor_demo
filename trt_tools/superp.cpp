@@ -3,7 +3,6 @@
 SuperPointC::SuperPointC(Config *config) : trtInterface(config)
 {
     trtInterface::initDims();
-
 }
 
 bool SuperPointC::inference(cv::Mat &img)
@@ -39,7 +38,6 @@ bool SuperPointC::inference(cv::Mat &img)
     }
     buffers.copyOutputToHost();
 
-
     if (!process_output(buffers))
     {
         return false;
@@ -74,20 +72,20 @@ bool SuperPointC::process_output(const BufferManager &buffers)
     return true;
 }
 
-    bool SuperPointC::process_input(const BufferManager &buffers, const cv::Mat &image)
-    {
-        auto *host_data_buffer = static_cast<float *>(buffers.getHostBuffer(trtInterface::config_->input_tensor_names[0]));
+bool SuperPointC::process_input(const BufferManager &buffers, const cv::Mat &image)
+{
+    auto *host_data_buffer = static_cast<float *>(buffers.getHostBuffer(trtInterface::config_->input_tensor_names[0]));
 
-        for (int row = 0; row < image.rows; ++row)
+    for (int row = 0; row < image.rows; ++row)
+    {
+        for (int col = 0; col < image.cols; ++col)
         {
-            for (int col = 0; col < image.cols; ++col)
-            {
-                host_data_buffer[row * image.cols + col] = float(image.at<unsigned char>(row, col));
-            }
+            host_data_buffer[row * image.cols + col] = float(image.at<unsigned char>(row, col));
         }
-        return true;
     }
-    // bool SuperPointC::build(bool isAddOptiProfile)
-    // {
-    //     return trtInterface::build(isAddOptiProfile);
-    // }
+    return true;
+}
+// bool SuperPointC::build(bool isAddOptiProfile)
+// {
+//     return trtInterface::build(isAddOptiProfile);
+// }

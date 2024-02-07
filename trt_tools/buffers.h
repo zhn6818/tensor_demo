@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 #include "NvInferRuntime.h"
-#include "common.h"
+#include "trt_common.h"
 #include "half.h"
 
 namespace tensorrt_virgo_buffer {

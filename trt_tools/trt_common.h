@@ -40,7 +40,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "logger.h"
+#include "trt_logger.h"
 
 using namespace nvinfer1;
 using namespace plugin;
